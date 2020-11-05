@@ -12,6 +12,7 @@
 #include "timer.h"
 
 int main(void) {
+
 	uint8_t eepromOutputByte;
 	/*
 		Initalizing I2C and UART
