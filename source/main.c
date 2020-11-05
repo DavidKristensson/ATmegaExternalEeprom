@@ -11,16 +11,26 @@
 #include "serial.h"
 #include "timer.h"
 
+int main(void) {
+	uint8_t eepromOutputByte;
+	/*
+		Initalizing I2C and UART
 
-void main (void) {
+		Enabling global interrupts
 
+		Writing a char to EEPROM
+		Reading char from EEPROM and saving in variable and printing it
+	*/
 	i2c_init();
 	uart_init();
-
 	sei();
 
+	eeprom_write_byte(EEPROM_ADDR_WRITE, 'D');
 	while (1) {
+		eepromOutputByte = eeprom_read_byte(EEPROM_ADDR_WRITE);
 
+		printf_P(PSTR("%c\n"), eepromOutputByte);
 	}
+	return 0;
 }
 
