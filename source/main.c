@@ -57,7 +57,11 @@ int main(void) {
 
 	eeprom_sequential_read(eepromOutput, EEPROM_ADDR_WRITE1, lenOfAllInputs);
 
-	printf_P(PSTR("String:%s\nHexdump:    %X"), eepromOutput, eepromOutput);
+	printf_P(PSTR("String:%s\nHex:        "), eepromOutput, eepromOutput);
+
+	for (int i = 0; i < strlen(eepromOutput); i++) {
+		printf_P(PSTR("%X "), eepromOutput[i]);
+	}
 	while (1) {
 		/*
 		// Sub-Task 2
