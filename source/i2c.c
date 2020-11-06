@@ -182,7 +182,7 @@ inline void eeprom_wait_until_write_complete() {
 	/*
 		If the device is still busy with the write cycle, no ACK will be returned. If the
 		cycle is complete, the device will return the ACK and the master can then proceed
-		with the next Read or Write command. 
+		with the next Read or Write command.
 
 		Await until SLAW+W transmitted and ACK received.
 	*/
@@ -205,7 +205,7 @@ uint8_t eeprom_read_byte(uint8_t eeprom_addr_write) {
 		Stop communication
 	*/
 	uint8_t readByte;
-	
+
 	i2c_start();
 	i2c_xmit_addr(EEPROM_ADDR, I2C_W);
 	i2c_xmit_byte(eeprom_addr_write);
@@ -241,12 +241,55 @@ void eeprom_write_byte(uint8_t eeprom_addr_write, uint8_t byte) {
 
 }
 
+void eeprom_write_page(uint8_t eeprom_addr_write, char* eepromInput) {
+	//If data is above 8 bytes the first bytes will be overwritten
+	/*
+		Start communication
+		Transmit address to the EEPROM memory and Write
+		Transmit the location in memory
 
+		Write byte for byte, address incrementation being automatic from the EEPROM
 
-void eeprom_write_page(uint8_t addr, uint8_t *data) {
-	// ... (VG)
+		Stop communication and make sure device is finished with writing.
+	*/
+	i2c_start();
+	i2c_xmit_addr(EEPROM_ADDR, I2C_W);
+	i2c_xmit_byte(eeprom_addr_write);
+
+	for (int i = 0; i < strlen(eepromInput); i++) {
+		i2c_xmit_byte(eepromInput[i]);
+	}
+
+	i2c_stop();
+	eeprom_wait_until_write_complete();
 }
 
-void eeprom_sequential_read(uint8_t *buf, uint8_t start_addr, uint8_t len) {
-	// ... (VG)
+void eeprom_sequential_read(char *eepromOutput, uint8_t eeprom_addr_write, uint8_t len) {
+	/*
+		Start communication
+		Transmit address to the EEPROM memory and Write
+		Transmit the location in memory
+
+		Start communication
+		Transmit address to the EEPROM memory and Read
+
+		Read byte for byte, assigning value on each index in char array
+		Sending ACK for each byte, last byte NAK is sent
+
+		Stop communication
+	*/
+	i2c_start();
+	i2c_xmit_addr(EEPROM_ADDR, I2C_W);
+	i2c_xmit_byte(eeprom_addr_write);
+
+	i2c_start();
+	i2c_xmit_addr(EEPROM_ADDR, I2C_R);
+	
+	for (int i = 0; i < (len - 1); i++) {
+		eepromOutput[i] = i2c_read_ACK();
+	}	
+	eepromOutput[len - 1] = i2c_read_NAK();
+
+	i2c_stop();
+
 }

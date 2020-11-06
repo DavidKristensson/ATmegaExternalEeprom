@@ -5,9 +5,10 @@
 #define I2C_W	0
 
 #define EEPROM_ADDR 0xA0 // Binary: 1010 0000, Decimal: 160
-#define EEPROM_ADDR_WRITE 0x10 //Binary: 0001 0000, Decimal: 16
-
-//const uint8_t EEPROM_ADDR_WRITE = 0x0A;
+#define EEPROM_ADDR_WRITE1 0x10 //Binary: 0001 0000, Decimal: 16
+#define EEPROM_ADDR_WRITE2 0x18
+#define EEPROM_ADDR_WRITE3 0x20
+#define EEPROM_ADDR_WRITE4 0x28
 
 void i2c_init(void);
 
@@ -26,7 +27,7 @@ void eeprom_write_byte(uint8_t eeprom_addr_write, uint8_t byte);
 
 void eeprom_wait_until_write_complete(void);
 
-void eeprom_write_page(uint8_t addr, uint8_t *data);
-void eeprom_sequential_read(uint8_t *buf, uint8_t start_addr, uint8_t len);
+void eeprom_write_page(uint8_t addr, char* data);
+void eeprom_sequential_read(char *eepromOutput, uint8_t eeprom_addr_write, uint8_t len);
 
 #endif // _I2C_H_

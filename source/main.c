@@ -17,8 +17,9 @@ int main(void) {
 
 		Enabling global interrupts
 
-		Writing DAVID char by char to EEPROM
-		Printing DAVID through UART by reading from EEPROM
+		Five char arrays are written to EEPROM with write page function
+		Sequential read function reads from EEPROM and concactenates eepromOutput string
+		eepromOutput is printed as a string and as hex
 	*/
 	i2c_init();
 	uart_init();
@@ -30,19 +31,43 @@ int main(void) {
 	eeprom_write_byte(EEPROM_ADDR_WRITE, 'D');
 	*/
 
+	/*
+	// Sub-task 2
 	uint8_t counter = 0;
 	eeprom_write_byte(EEPROM_ADDR_WRITE, 'D');
 	eeprom_write_byte(EEPROM_ADDR_WRITE + 1, 'A');
 	eeprom_write_byte(EEPROM_ADDR_WRITE + 2, 'V');
 	eeprom_write_byte(EEPROM_ADDR_WRITE + 3, 'I');
 	eeprom_write_byte(EEPROM_ADDR_WRITE + 4, 'D');
+	*/
+
+	char eepromInput1[9] = "     Hej";
+	char eepromInput2[9] = "  Oscar ";
+	char eepromInput3[9] = " eller  ";
+	char eepromInput4[9] = "Niclas! ";
+
+	char eepromOutput[40] = "";
+
+	uint8_t lenOfAllInputs = strlen(eepromInput1) + strlen(eepromInput2) + strlen(eepromInput3) + strlen(eepromInput4);
+
+	eeprom_write_page(EEPROM_ADDR_WRITE1, eepromInput1);
+	eeprom_write_page(EEPROM_ADDR_WRITE1 + strlen(eepromInput1), eepromInput2);
+	eeprom_write_page(EEPROM_ADDR_WRITE1 + strlen(eepromInput1) + strlen(eepromInput2), eepromInput3);
+	eeprom_write_page(EEPROM_ADDR_WRITE1 + strlen(eepromInput1) + strlen(eepromInput2) + strlen(eepromInput3), eepromInput4);
+
+	eeprom_sequential_read(eepromOutput, EEPROM_ADDR_WRITE1, lenOfAllInputs);
+
+	printf_P(PSTR("String:%s\nHexdump:    %X"), eepromOutput, eepromOutput);
 	while (1) {
+		/*
+		// Sub-Task 2
 		printf_P(PSTR("%c"), eeprom_read_byte(EEPROM_ADDR_WRITE + counter));
 		counter++;
 		if (counter == 5) {
 			counter = 0;
 			printf_P(PSTR("\n"));
 		}
+		*/
 		
 		/*
 		// Sub-Task 1
